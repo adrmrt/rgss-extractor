@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "bootstrap-sha": "0b6c4bb0755a28767b055cba9c1f9249dce0aaaf",
+  "packages": {
+    ".": {
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "RGSS Extractor.csproj",
+          "xpath": "//Project/PropertyGroup/Version"
+        }
+      ]
+    }
+  }
+}

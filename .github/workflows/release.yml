@@ -1,19 +1,20 @@
-name: .NET Release Workflow
+name: release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  publish:
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -29,9 +30,10 @@ jobs:
       - name: Zip publish output
         run: Compress-Archive -Path publish/* -DestinationPath release-win64.zip
 
-      - name: Create/Update GitHub Release + upload asset
+      - name: Upload asset to release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.release.tag_name }}
           files: release-win64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
