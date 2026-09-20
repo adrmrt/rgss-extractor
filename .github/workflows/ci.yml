@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore
+      - run: dotnet build -c Release --no-restore
+
+  non-ascii:
+    name: Non-ASCII Character Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for non-ASCII characters in C# source
+        run: |
+          if grep -rPln '[^\x00-\x7F]' --include='*.cs' .; then
+            echo "::error::Non-ASCII characters found in C# source"
+            exit 1
+          fi
+
+  lint-commits:
+    name: Commit Lint
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -e
+          # Conventional Commits: type(optional scope)!: description
+          PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9._/-]+\))?!?: .+'
+          fail=0
+
+          while IFS= read -r sha; do
+            subject=$(git log -1 --format=%s "$sha")
+            body=$(git log -1 --format=%B "$sha")
+
+            echo "Checking $sha: $subject"
+
+            if ! echo "$subject" | grep -qE "$PATTERN"; then
+              echo "::error::Commit $sha does not follow Conventional Commits format (type(scope): description): $subject"
+              fail=1
+            fi
+
+            if printf '%s' "$body" | LC_ALL=C grep -qP '[^\x00-\x7F]'; then
+              echo "::error::Commit $sha message contains non-ASCII characters"
+              fail=1
+            fi
+          done < <(git rev-list --no-merges "$BASE_SHA..$HEAD_SHA")
+
+          exit $fail
