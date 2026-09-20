@@ -2,7 +2,7 @@
 
 RPG Maker, a popular game development platform, often handles its game assets in packed file formats like `.rgssad`, `.rgss2a`, or `.rgss3a`. These formats encapsulate various game assets, making them challenging to access and modify.
 
-The RGSS Extractor is a .NET 9.0 WinForms tool that allows users to open these files, view their contents, and extract them whole or individually.
+The RGSS Extractor is a .NET 10.0 WinForms tool that allows users to open these files, view their contents, and extract them whole or individually.
 
 ## Installation and Usage
 
@@ -16,7 +16,7 @@ The RGSS Extractor is a .NET 9.0 WinForms tool that allows users to open these f
 ### Method 2: Cloning and Running Manually
 
 1. Clone this repository locally.
-2. Open the project in your preferred IDE that supports .NET 9.0.
+2. Open the project in your preferred IDE that supports .NET 10.0.
 3. Build and run the project manually from the IDE.
 
 ## Features
