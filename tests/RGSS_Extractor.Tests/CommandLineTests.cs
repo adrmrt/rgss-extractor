@@ -55,7 +55,7 @@ public sealed class CommandLineTests : IDisposable
         Assert.Equal("hello"u8.ToArray(), File.ReadAllBytes(Path.Join(temp.Path, "out", "f.txt")));
     }
 
-    [Fact(Skip = "Known bug: a missing output argument throws IndexOutOfRangeException")]
+    [Fact]
     public void MissingOutputArgumentFailsCleanly()
     {
         var archive = temp.File("game.rgssad", ArchiveWriter.WriteV1(("f.txt", [1])));
@@ -63,7 +63,7 @@ public sealed class CommandLineTests : IDisposable
         Assert.Equal(1, Run(temp.Path, archive));
     }
 
-    [Fact(Skip = "Known bug: an invalid archive exits with code 0")]
+    [Fact]
     public void InvalidArchiveFailsCleanly()
     {
         var file = temp.File("bad.bin", "not an archive"u8.ToArray());

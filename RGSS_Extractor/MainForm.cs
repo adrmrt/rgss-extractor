@@ -76,11 +76,13 @@ namespace RGSS_Extractor
             }
             this.CloseArchive();
             this.entries = this.parser.ParseFile(path);
-            if (this.entries != null)
+            if (this.entries == null)
             {
-                this.BuildFileList(this.entries);
-                this.archivePath = path;
+                MessageBox.Show(this, $"{path} is not a supported RGSS archive.", "Cannot open archive", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
+            this.BuildFileList(this.entries);
+            this.archivePath = path;
         }
 
         private void ExportArchive(string path)
@@ -197,7 +199,10 @@ namespace RGSS_Extractor
 
         private void OnOpenMenuItemClick(object sender, EventArgs e)
         {
-            this.openFileDialog.ShowDialog();
+            if (this.openFileDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
             this.ReadArchive(this.openFileDialog.FileName);
         }
 

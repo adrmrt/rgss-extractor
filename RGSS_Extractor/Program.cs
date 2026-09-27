@@ -23,7 +23,7 @@ namespace RGSS_Extractor
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         [STAThread]
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
             if (args.Length > 0)
             {
@@ -40,16 +40,45 @@ namespace RGSS_Extractor
                     AllocConsole();
                 }
 
-                var mainParser = new MainParser();
-                mainParser.ParseFile(args[0]);
-                mainParser.ExportArchive(args[1]);
+                int exitCode = RunCommandLine(args);
                 FreeConsole();
-                return;
+                return exitCode;
             }
 
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += (sender, e) =>
+                MessageBox.Show(e.Exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
+            return 0;
+        }
+
+        private static int RunCommandLine(string[] args)
+        {
+            if (args.Length != 2)
+            {
+                Console.Error.WriteLine("Usage: \"RGSS Extractor.exe\" <archive> <output folder>");
+                return 1;
+            }
+
+            try
+            {
+                var mainParser = new MainParser();
+                if (mainParser.ParseFile(args[0]) == null)
+                {
+                    Console.Error.WriteLine("{0} is not a supported RGSS archive.", args[0]);
+                    return 1;
+                }
+
+                mainParser.ExportArchive(args[1]);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                return 1;
+            }
         }
     }
 }

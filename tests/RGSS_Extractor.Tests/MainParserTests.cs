@@ -10,7 +10,7 @@ public sealed class MainParserTests : IDisposable
     public void Dispose()
     {
 #pragma warning disable CS0612 // CloseFile is the only way to release the archive handle
-        try { parser.CloseFile(); } catch (NullReferenceException) { }
+        parser.CloseFile();
 #pragma warning restore CS0612
         temp.Dispose();
     }
@@ -157,7 +157,7 @@ public sealed class MainParserTests : IDisposable
         Assert.False(File.Exists(Path.Join(outDir, SampleFiles[0].Name)));
     }
 
-    // Known bugs: each test states the intended behavior. Remove the Skip together with the fix.
+    // Regression tests for bugs found in the initial audit.
 
     [Fact]
     public void ExportOverwritesLargerExistingFile()
@@ -184,7 +184,7 @@ public sealed class MainParserTests : IDisposable
         Assert.False(File.Exists(Path.Join(temp.Path, "escaped.txt")));
     }
 
-    [Fact(Skip = "Known bug: a failed open keeps the previous, already closed parser, so export throws ObjectDisposedException")]
+    [Fact]
     public void ExportAfterFailedOpenDoesNothing()
     {
         Open(ArchiveWriter.WriteV1(("f.txt", [1])));
@@ -199,7 +199,7 @@ public sealed class MainParserTests : IDisposable
         Assert.False(Directory.Exists(outDir));
     }
 
-    [Fact(Skip = "Known bug: ParseFile returns null without closing the file it opened")]
+    [Fact]
     public void RejectedFileIsNotLeftOpen()
     {
         var path = temp.File("bad.bin", "not an archive"u8.ToArray());
@@ -207,5 +207,16 @@ public sealed class MainParserTests : IDisposable
         Assert.Null(parser.ParseFile(path));
 
         File.Delete(path); // throws IOException on Windows while a handle is open
+    }
+
+    [Fact]
+    public void TruncatedArchiveThrowsAndIsNotLeftOpen()
+    {
+        var archive = ArchiveWriter.WriteV3(1, ("f.txt", [1, 2, 3], 5u));
+        var path = temp.File("truncated.rgss3a", archive[..20]); // cut off inside the file table
+
+        Assert.ThrowsAny<IOException>(() => parser.ParseFile(path));
+
+        File.Delete(path);
     }
 }

@@ -11,23 +11,38 @@ public class MainParser
 
     public List<Entry> ParseFile(string path)
     {
+        parser?.CloseFile();
+        parser = null;
+
         BinaryReader binaryReader = new BinaryReader(File.OpenRead(path));
-        string @string = Encoding.UTF8.GetString(binaryReader.ReadBytes(6));
-        if (@string != "RGSSAD")
+        try
         {
-            return null;
-        }
+            string @string = Encoding.UTF8.GetString(binaryReader.ReadBytes(6));
+            if (@string != "RGSSAD")
+            {
+                return null;
+            }
 
-        binaryReader.ReadByte();
-        int version = binaryReader.ReadByte();
-        parser = CreateParser(version, binaryReader);
-        if (parser == null)
+            binaryReader.ReadByte();
+            int version = binaryReader.ReadByte();
+            Parser candidate = CreateParser(version, binaryReader);
+            if (candidate == null)
+            {
+                return null;
+            }
+
+            candidate.ParseFile();
+            parser = candidate;
+            return parser.entries;
+        }
+        finally
         {
-            return null;
+            // Rejected or unparsable files must not stay open.
+            if (parser == null)
+            {
+                binaryReader.Close();
+            }
         }
-
-        parser.ParseFile();
-        return parser.entries;
     }
 
     public byte[] GetFileData(Entry entry)
@@ -53,7 +68,7 @@ public class MainParser
     [Obsolete]
     public void CloseFile()
     {
-        parser.CloseFile();
+        parser?.CloseFile();
     }
 
     private static Parser CreateParser(int version, BinaryReader inFile)
