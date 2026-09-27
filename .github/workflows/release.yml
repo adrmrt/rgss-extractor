@@ -25,7 +25,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish (win-x64, single file)
-        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --output publish/
+        run: dotnet publish "RGSS Extractor.csproj" -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --output publish/
 
       - name: Zip publish output
         run: Compress-Archive -Path publish/* -DestinationPath release-win64.zip

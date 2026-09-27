@@ -20,6 +20,7 @@ jobs:
           dotnet-version: '10.0.x'
       - run: dotnet restore
       - run: dotnet build -c Release --no-restore
+      - run: dotnet test -c Release --no-build
 
   non-ascii:
     name: Non-ASCII Character Check
