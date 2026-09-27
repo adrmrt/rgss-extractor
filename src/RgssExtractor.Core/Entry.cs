@@ -1,4 +1,4 @@
-namespace RGSS_Extractor;
+namespace RgssExtractor.Core;
 
 public class Entry
 {

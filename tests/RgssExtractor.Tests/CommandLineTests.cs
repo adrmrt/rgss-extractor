@@ -1,11 +1,11 @@
 using System.Diagnostics;
 
-namespace RGSS_Extractor.Tests;
+namespace RgssExtractor.Tests;
 
 // Runs the real app exe, because the command-line path lives in Program.Main.
 public sealed class CommandLineTests : IDisposable
 {
-    private static readonly string ExePath = Path.ChangeExtension(typeof(MainParser).Assembly.Location, ".exe");
+    private static readonly string ExePath = Path.ChangeExtension(typeof(MainForm).Assembly.Location, ".exe");
 
     private readonly TempDir temp = new();
 

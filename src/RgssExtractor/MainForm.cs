@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using RgssExtractor.Core;
 
-namespace RGSS_Extractor
+namespace RgssExtractor
 {
     public class MainForm : Form
     {

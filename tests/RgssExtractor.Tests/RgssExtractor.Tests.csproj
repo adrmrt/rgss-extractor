@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RGSS Extractor.csproj" />
-  </ItemGroup>
+    <ProjectReference Include="..\..\src\RgssExtractor\RgssExtractor.csproj" />  </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="RgssExtractor.Core" />
   </ItemGroup>
 
 </Project>

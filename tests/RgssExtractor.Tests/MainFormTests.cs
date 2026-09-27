@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace RGSS_Extractor.Tests;
+namespace RgssExtractor.Tests;
 
 public class MainFormTests
 {

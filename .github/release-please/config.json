@@ -7,7 +7,7 @@
       "extra-files": [
         {
           "type": "xml",
-          "path": "RGSS Extractor.csproj",
+          "path": "src/RgssExtractor/RgssExtractor.csproj",
           "xpath": "//Project/PropertyGroup/Version"
         }
       ]

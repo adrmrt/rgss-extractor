@@ -1,10 +1,10 @@
 using System.IO;
 
-namespace RGSS_Extractor
+namespace RgssExtractor.Core
 {
-    internal class RGSSAD_Parser : Parser
+    internal class Rgss3aParser : Parser
     {
-        public RGSSAD_Parser(BinaryReader file) : base(file)
+        public Rgss3aParser(BinaryReader file) : base(file)
         {
         }
 
@@ -15,8 +15,7 @@ namespace RGSS_Extractor
             {
                 byte[] expr_18_cp_0 = array;
                 int expr_18_cp_1 = i;
-                expr_18_cp_0[expr_18_cp_1] ^= (byte)magicKey;
-                magicKey = magicKey * 7 + 3;
+                expr_18_cp_0[expr_18_cp_1] ^= (byte)(magicKey >> 8 * (i % 4));
             }
 
             return GetString(array);
@@ -24,30 +23,34 @@ namespace RGSS_Extractor
 
         public void ParseTable()
         {
-            while (inFile.BaseStream.Position != inFile.BaseStream.Length)
+            while (true)
             {
-                int num = inFile.ReadInt32();
+                long num = inFile.ReadInt32();
                 num ^= magicKey;
-                magicKey = magicKey * 7 + 3;
-                string name = ReadFilename(num);
+                if (num == 0L)
+                {
+                    break;
+                }
+
                 long num2 = inFile.ReadInt32();
+                int num3 = inFile.ReadInt32();
+                int num4 = inFile.ReadInt32();
                 num2 ^= magicKey;
-                magicKey = magicKey * 7 + 3;
-                long position = inFile.BaseStream.Position;
-                inFile.BaseStream.Seek(num2, SeekOrigin.Current);
+                num3 ^= magicKey;
+                num4 ^= magicKey;
+                string name = ReadFilename(num4);
                 Entry entry = new Entry();
+                entry.Offset = num;
                 entry.Name = name;
-                entry.Offset = position;
                 entry.Size = num2;
-                entry.DataKey = magicKey;
+                entry.DataKey = num3;
                 entries.Add(entry);
             }
         }
 
         public override void ParseFile()
         {
-            uint magickey = 3735931646u;
-            magicKey = (int)magickey;
+            magicKey = inFile.ReadInt32() * 9 + 3;
             ParseTable();
         }
     }

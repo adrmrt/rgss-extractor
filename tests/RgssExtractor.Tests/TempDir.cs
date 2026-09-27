@@ -1,4 +1,4 @@
-namespace RGSS_Extractor.Tests;
+namespace RgssExtractor.Tests;
 
 internal sealed class TempDir : IDisposable
 {

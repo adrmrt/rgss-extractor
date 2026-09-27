@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace RGSS_Extractor
+namespace RgssExtractor.Core
 {
     internal abstract class Parser
     {

@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RgssExtractor.Core/RgssExtractor.Core.csproj" />
+    <Project Path="src/RgssExtractor/RgssExtractor.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RgssExtractor.Tests/RgssExtractor.Tests.csproj" />
+  </Folder>
+</Solution>

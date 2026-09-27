@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace RGSS_Extractor.Tests;
+namespace RgssExtractor.Tests;
 
 public sealed class MainParserTests : IDisposable
 {

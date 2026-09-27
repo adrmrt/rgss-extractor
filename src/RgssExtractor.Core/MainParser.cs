@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace RGSS_Extractor;
+namespace RgssExtractor.Core;
 
 public class MainParser
 {
@@ -74,12 +74,12 @@ public class MainParser
     {
         if (version == 1)
         {
-            return new RGSSAD_Parser(inFile);
+            return new RgssadParser(inFile);
         }
 
         if (version == 3)
         {
-            return new RGSS3A_Parser(inFile);
+            return new Rgss3aParser(inFile);
         }
 
         return null;

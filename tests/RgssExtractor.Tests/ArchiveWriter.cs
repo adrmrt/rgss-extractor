@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace RGSS_Extractor.Tests;
+namespace RgssExtractor.Tests;
 
 // Test-only encoder, written from the archive format rather than from the parser code,
 // so round-trip tests do not just mirror the parser's own assumptions.
