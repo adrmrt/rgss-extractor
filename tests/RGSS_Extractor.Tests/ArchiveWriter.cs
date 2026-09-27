@@ -67,9 +67,9 @@ internal static class ArchiveWriter
 
         w.Write(key); // offset 0 after XOR ends the table
 
-        foreach (var f in files)
+        foreach (var (_, data, fileKey) in files)
         {
-            w.Write(Crypt(f.Data, f.FileKey));
+            w.Write(Crypt(data, fileKey));
         }
 
         return ms.ToArray();

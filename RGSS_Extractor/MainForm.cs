@@ -147,7 +147,7 @@ namespace RGSS_Extractor
 
         private void DetermineAction(Entry entry)
         {
-            if (entry.Name.EndsWith(".png"))
+            if (entry.Name.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             {
                 this.ShowImage(entry);
             }
@@ -163,24 +163,18 @@ namespace RGSS_Extractor
             this.DetermineAction(entry);
         }
 
-        private void ExportNodes(TreeNode node, string path)
+        internal static List<Entry> CollectEntries(TreeNode node)
         {
-            if (node.Tag != null)
+            var result = new List<Entry>();
+            if (node.Tag is Entry entry)
             {
-                Entry e = (Entry)node.Tag;
-                this.parser.ExportFile(e, path);
+                result.Add(entry);
             }
-            foreach (TreeNode treeNode in node.Nodes)
+            foreach (TreeNode child in node.Nodes)
             {
-                this.ExportNodes(treeNode, path);
-                if (treeNode.Tag != null)
-                {
-                    Entry e = (Entry)treeNode.Tag;
-                    this.parser.ExportFile(e, path);
-                }
+                result.AddRange(CollectEntries(child));
             }
-
-            MessageBox.Show(this, $"Data exported to {path}", "Export finished", MessageBoxButtons.OK);
+            return result;
         }
 
         private void OnExportMenuItemClick(object sender, EventArgs e)
@@ -189,7 +183,12 @@ namespace RGSS_Extractor
             {
                 return;
             }
-            this.ExportNodes(this.explorerView.SelectedNode, writeExportDialog.SelectedPath);
+            string path = writeExportDialog.SelectedPath;
+            foreach (var entry in CollectEntries(this.explorerView.SelectedNode))
+            {
+                this.parser.ExportFile(entry, path);
+            }
+            MessageBox.Show(this, $"Data exported to {path}", "Export finished", MessageBoxButtons.OK);
         }
 
         private void OnExplorerViewNodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)

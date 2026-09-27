@@ -65,7 +65,6 @@ public class MainParser
         parser.WriteEntries(path);
     }
 
-    [Obsolete]
     public void CloseFile()
     {
         parser?.CloseFile();

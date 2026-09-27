@@ -9,9 +9,7 @@ public sealed class MainParserTests : IDisposable
 
     public void Dispose()
     {
-#pragma warning disable CS0612 // CloseFile is the only way to release the archive handle
         parser.CloseFile();
-#pragma warning restore CS0612
         temp.Dispose();
     }
 
@@ -126,9 +124,7 @@ public sealed class MainParserTests : IDisposable
         var v3 = new MainParser();
         var entries = v3.ParseFile(temp.File("v3.bin", ArchiveWriter.WriteV3(42, ("f", data, 0xCAFEBABEu))));
         Assert.Equal(data, v3.GetFileData(entries[0]));
-#pragma warning disable CS0612
         v3.CloseFile();
-#pragma warning restore CS0612
     }
 
     [Fact]
@@ -148,7 +144,7 @@ public sealed class MainParserTests : IDisposable
     [Fact]
     public void ExportFileWritesSingleEntry()
     {
-        var entries = Open(ArchiveWriter.WriteV3(7, SampleFiles.Select(f => (f.Name, f.Data, 1u)).ToArray()));
+        var entries = Open(ArchiveWriter.WriteV3(7, [.. SampleFiles.Select(f => (f.Name, f.Data, 1u))]));
         var outDir = Path.Join(temp.Path, "out");
 
         parser.ExportFile(entries[1], outDir);
@@ -188,9 +184,7 @@ public sealed class MainParserTests : IDisposable
     public void ExportAfterFailedOpenDoesNothing()
     {
         Open(ArchiveWriter.WriteV1(("f.txt", [1])));
-#pragma warning disable CS0612
         parser.CloseFile(); // what MainForm does before opening the next archive
-#pragma warning restore CS0612
         Assert.Null(parser.ParseFile(temp.File("bad.bin", "not an archive"u8.ToArray())));
         var outDir = Path.Join(temp.Path, "out");
 
