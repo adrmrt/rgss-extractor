@@ -159,7 +159,7 @@ public sealed class MainParserTests : IDisposable
 
     // Known bugs: each test states the intended behavior. Remove the Skip together with the fix.
 
-    [Fact(Skip = "Known bug: File.OpenWrite does not truncate, so stale trailing bytes remain")]
+    [Fact]
     public void ExportOverwritesLargerExistingFile()
     {
         Open(ArchiveWriter.WriteV1(("f.txt", "new"u8.ToArray())));
@@ -172,7 +172,7 @@ public sealed class MainParserTests : IDisposable
         Assert.Equal("new"u8.ToArray(), File.ReadAllBytes(Path.Join(outDir, "f.txt")));
     }
 
-    [Fact(Skip = "Known bug: entry names containing ..\\ are written outside the output folder")]
+    [Fact]
     public void ExportKeepsEntriesInsideOutputFolder()
     {
         Open(ArchiveWriter.WriteV1((@"..\escaped.txt", [1])));

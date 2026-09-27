@@ -21,6 +21,16 @@ jobs:
       - run: dotnet restore
       - run: dotnet build -c Release --no-restore
       - run: dotnet test -c Release --no-build
+      - name: Smoke test single-file build
+        shell: pwsh
+        run: |
+          # Same publish flags as release.yml; single-file builds behave differently (e.g. Assembly.Location is empty)
+          dotnet publish "RGSS Extractor.csproj" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output smoke
+          # v1 archive with one entry "a" containing "hello"
+          [IO.File]::WriteAllBytes("$PWD/smoke/game.rgssad", [byte[]](0x52,0x47,0x53,0x53,0x41,0x44,0x00,0x01,0xFF,0xCA,0xAD,0xDE,0x94,0xB3,0xDA,0x43,0x9F,0x95,0x9F,0xB6,0x36,0x81))
+          $p = Start-Process "$PWD/smoke/RGSS Extractor.exe" -ArgumentList 'game.rgssad', 'out' -WorkingDirectory "$PWD/smoke" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Exit code $($p.ExitCode)" }
+          if ((Get-Content smoke/out/a -Raw) -ne 'hello') { throw 'Extracted content differs' }
 
   non-ascii:
     name: Non-ASCII Character Check

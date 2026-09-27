@@ -183,7 +183,7 @@ namespace RGSS_Extractor
 
         private void OnExportMenuItemClick(object sender, EventArgs e)
         {
-            if (this.explorerView.SelectedNode == null)
+            if (this.explorerView.SelectedNode == null || writeExportDialog.ShowDialog() != DialogResult.OK)
             {
                 return;
             }
@@ -203,7 +203,10 @@ namespace RGSS_Extractor
 
         private void OnExportArchiveMenuItemClick(object sender, EventArgs e)
         {
-            writeExportDialog.ShowDialog();
+            if (writeExportDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
             this.ExportArchive(writeExportDialog.SelectedPath);
         }
 

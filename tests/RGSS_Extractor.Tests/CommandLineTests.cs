@@ -45,7 +45,7 @@ public sealed class CommandLineTests : IDisposable
         Assert.Equal("hello"u8.ToArray(), File.ReadAllBytes(Path.Join(outDir, "Data", "f.txt")));
     }
 
-    [Fact(Skip = "Known bug: output paths resolve against the exe folder (Assembly.Location), which also crashes single-file builds")]
+    [Fact]
     public void RelativeOutputPathResolvesAgainstWorkingDirectory()
     {
         temp.File("game.rgssad", ArchiveWriter.WriteV1(("f.txt", "hello"u8.ToArray())));

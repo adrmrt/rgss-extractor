@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace RGSS_Extractor
@@ -9,8 +8,6 @@ namespace RGSS_Extractor
     internal abstract class Parser
     {
         protected BinaryReader inFile;
-
-        protected BinaryWriter outFile;
 
         protected int magicKey;
 
@@ -26,15 +23,6 @@ namespace RGSS_Extractor
         public static string GetString(byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
-        }
-
-        public void CreateFile(string path)
-        {
-            string directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string path2 = Path.Combine(directoryName, Path.GetDirectoryName(path));
-            string path3 = Path.Combine(directoryName, path);
-            Directory.CreateDirectory(path2);
-            outFile = new BinaryWriter(File.OpenWrite(path3));
         }
 
         public byte[] ReadData(long offset, long size, int dataKey)
@@ -69,10 +57,16 @@ namespace RGSS_Extractor
 
         public void WriteFile(Entry e, string path)
         {
-            CreateFile(Path.Join(path, e.Name));
-            data = ReadData(e.Offset, e.Size, e.DataKey);
-            outFile.Write(data);
-            outFile.Close();
+            string root = Path.GetFullPath(path);
+            string target = Path.GetFullPath(Path.Join(root, e.Name));
+            string relative = Path.GetRelativePath(root, target);
+            if (relative == ".." || relative.StartsWith(".." + Path.DirectorySeparatorChar) || Path.IsPathRooted(relative))
+            {
+                throw new InvalidDataException($"Entry '{e.Name}' resolves outside the output folder.");
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(target));
+            File.WriteAllBytes(target, ReadData(e.Offset, e.Size, e.DataKey));
             Console.WriteLine("{0} wrote out successfully", e.Name);
         }
 
