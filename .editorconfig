@@ -1,0 +1,21 @@
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+[*.{csproj,resx,xml,json,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.sln]
+indent_style = tab
+
+[*.{bat,cmd}]
+end_of_line = crlf
