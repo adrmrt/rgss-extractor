@@ -3,13 +3,13 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <AssemblyName>RGSS Extractor</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RgssExtractor.Core\RgssExtractor.Core.csproj" />
-    <InternalsVisibleTo Include="RgssExtractor.Tests" />
+    <ProjectReference Include="..\RgssExtractor.Core\RgssExtractor.Core.csproj"/>
+    <InternalsVisibleTo Include="RgssExtractor.Tests"/>
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
